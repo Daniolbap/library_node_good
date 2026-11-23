@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>Buscar Mi libro</h1>
+    <form action="/search2" method="POST">
+
+        <input type="text" name="title" placeholder="Buscar libro">
+
+        <button type="submit">Buscar</button>
+        <% if (searched) { %>
+
+            <% if (books.length===0) { %>
+
+                <h2 style="color:brown;">No existe el libro</h2>
+
+                <% } else { %>
+                    <h2 style=" color: greenyellow">libro encontrado</h2>
+                    <% books.forEach(book=> { %>
+                        <p>
+                            <%= book.id %> -
+                                <%= book.title %> -
+                                    <%= book.author %>
+                                    <%= book.genre %>
+                        </p>
+                             <section class="flex">
+                <section class="grid">
+                    <form action="/delete" method="POST">
+                        <input type="hidden" name="id" value="<%= book.id %>">
+                        <button type="submit">Eliminar</button>
+                    </form>
+
+                    <form action="/edit" method="GET">
+                        <input type="hidden" name="id" value="<%= book.id %>">
+                        <button type="submit">Editar</button>
+                    </form>
+
+                    
+                </section>
+                        <% }); %>
+
+                            <% } %>
+
+                                <% } %>
+    </form>
+    <section class="volver">
+        <a href="/">volver</a>
+    </section>
+</body>
+
+</html>

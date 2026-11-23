@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap"
+        rel="stylesheet">
+
+    <title>Libros</title>
+</head>
+
+<body>
+    <h1 id="titulo">Biblioteca</h1>
+    <section class="add">
+        <form action="/add" method="POST" id="add">
+
+            <input type="text" name="title" placeholder="Título">
+            <input type="text" name="author" placeholder="Autor">
+            <input type="text" name="genre" placeholder="genre">
+
+            <button type="submit">Agregar libro</button>
+
+        </form>
+    </section>
+
+    <section class="search">
+        <h2 id="buscar">Busca tu libro</h2>
+        <form action="/search">
+
+            <button type="submit">Buscar</button>
+        </form>
+    </section>
+
+    <section class="delete">
+        <% books.forEach (book=>{ %>
+            <p> id:<%= book.id %>
+                    <%= book.title %> - <%= book.author %> - <%= book.genre %>
+            </p>
+            <section class="flex">
+                <section class="grid">
+                    <form action="/delete" method="POST">
+                        <input type="hidden" name="id" value="<%= book.id %>">
+                        <button type="submit">Eliminar</button>
+                    </form>
+
+                    <form action="/edit" method="GET">
+                        <input type="hidden" name="id" value="<%= book.id %>">
+                        <button type="submit">Editar</button>
+                    </form>
+                </section>
+                <% }); %>
+            </section>
+            <section>
+                <h1>formulario x</h1>
+                <form id="formulario">
+                    <input type="text" placeholder="Nombre">
+                    <input type="number" placeholder="Edad">
+                    <button type="submit" class="but">Enviar</button>
+                </form>
+            </section>
+
+            <h2 id="final2"></h2>
+
+            <section class="inpur">
+                <h2 id="Personasr"></h2>
+                <input id="in" type="search" placeholder="Nombre">
+                <p id="lista-personas"></p>
+
+            </section>
+    </section>
+
+    <h1>Todos los libros</h1>
+    <section class="jiji">
+
+        <h2 id="final"></h2>
+    </section>
+    <script>
+        async function probarFetch() {
+            const response = await fetch("/prueba");
+            const data = await response.json();
+            data.forEach(datos => {
+                console.log(datos.title);
+            });
+
+            const elemento = document.getElementById("titulo");
+            // elemento.textContent = ` titulo : ${data[0].title}`;
+            //////agregando un elemeto 
+            const agregarDeElemento = document.getElementById("final");
+            agregarDeElemento.textContent = "";//limpia el contenido 
+
+            data.forEach(datos => {
+
+
+                const div = document.createElement("div");
+                div.classList.add("libro");//añade class "libro" a los div 
+
+                const title = document.createElement("p");
+                title.classList.add("titulo");//agregando un class titulo 
+                title.textContent = `Titulo:${datos.title}`;
+
+                // agregarDeElemento.appendChild(title);
+
+                div.appendChild(title)
+
+                const autor = document.createElement("p");
+                autor.classList.add("autor");
+                autor.textContent = `Autor:${datos.author}`;
+                // agregarDeElemento.appendChild(autor);
+
+                div.appendChild(autor)
+                const genre = document.createElement("p");
+                genre.classList.add("genero");
+                genre.textContent = `Genero:${datos.genre}`;
+                // agregarDeElemento.appendChild(genre);
+
+                div.appendChild(genre)
+                agregarDeElemento.appendChild(div);
+                //console.log(document.querySelectorAll(".libro")); selecciona todas las clases 
+
+
+            });
+
+            const libros = document.querySelectorAll(".libro");
+
+
+            libros.forEach(libro => {
+                const libre = document.querySelector(".libro");
+                //.log(libre.querySelector(".autor").textContent);
+
+                //console.log(libre.textContent);
+
+
+            })
+
+            document.querySelectorAll(".libro").forEach(libro => {
+                // aquí libro representa un libro individual
+                console.log(libro.querySelector(".titulo").textContent)
+            });
+
+
+            //eventlistener y asi 
+
+
+
+            const libro = document.querySelectorAll(".libro");
+
+
+
+            libro.forEach(libros => {
+                libros.addEventListener("click", (evento) => {
+                    //.log(`hiciste click en el ${libros.querySelector(".titulo").textContent}`)
+
+                    //bros.querySelector(".titulo").textContent = "SELECCIONADO";  //cambia el texto
+
+
+                    // console.log(evento.target); el elemento exacto que recibió el click originalmente.
+
+                    console.log(evento.currentTarget);//el elemento al que le agregaste el addEventListener.
+                    console.log(evento.target);
+                    evento.stopPropagation();//Lo que hace es impedir que el evento continúe propagándose hacia los padres.
+
+
+                });
+                agregarDeElemento.addEventListener("click", () => {
+                    console.log("click en el contenedor");
+                });
+
+
+            })
+            /* const formulario = document.getElementById("formulario");
+             formulario.addEventListener("submit", (evento) => {
+                 console.log("se intentó enviar");
+                 evento.preventDefault();
+                 //el formulario ya no obliga al navegador a navegar/recargar
+                 const input = formulario.querySelector("input").value;
+ 
+                 console.log(input);
+             });*/
+
+            ////////////////fetch()
+
+            // console.log(JSON.stringify(datos));//stringify convierte el ebjeto a un json normal 
+            console.log("enviando datos");
+
+
+
+            const response2 = await fetch("/prueba", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"// le dice al servidor "Los datos que estoy enviando están en formato JSON."
+                },
+
+            });
+
+            const data2 = await response2.json();
+
+            const propiedades = ["nombre", "edad"];
+
+
+            const formulario = document.getElementById("formulario");
+
+            async function errorHTTP(respuesta) {
+                const msg = await respuesta.json();
+                console.log(msg.error);
+                document.getElementById("final2").textContent = `El servidor respondió con un error:${msg.error}`;
+                return;
+            }
+
+            let personasActuales = []
+            const teclado = document.getElementById("in");
+            function actualizarVista() {
+                const toStr = teclado.value.toString();
+                console.log(toStr);
+                const nombres = personasActuales.filter(n => n.nombre.toLowerCase().includes(toStr));
+                mostrarPersonas({ personas: nombres });
+            }
+
+            teclado.addEventListener("input", async (event) => {
+                actualizarVista();
+            })
+            function mostrarPersonas(dataPersonas) {
+                const agregarDeElemento2 = document.getElementById("lista-personas");
+                agregarDeElemento2.replaceChildren();
+
+                // console.log(arrayPersonas);
+
+
+                // const baratos = productos.filter(producto => producto.precio < 1000);
+
+
+                dataPersonas.personas.forEach(persona => {
+                    //console.log(persona.nombre);
+
+                    const div = document.createElement("div");
+                    div.classList.add("personas");
+                    const id = document.createElement("p");
+                    id.textContent = `id:${persona.id}`;
+                    div.appendChild(id);
+                    const nombre = document.createElement("p");
+                    nombre.textContent = `Nombre:${persona.nombre}`;
+                    div.appendChild(nombre);
+                    const edad = document.createElement("p");
+                    edad.textContent = `Edad:${persona.edad}`;
+                    div.appendChild(edad);
+                    const button = document.createElement("button");
+                    button.textContent = 'Eliminar';
+                    button.type = "button";
+                    div.appendChild(button);
+                    const button2 = document.createElement("button");
+                    button2.textContent = 'Modificar';
+                    button2.type = "button";
+                    div.appendChild(button2);
+                    agregarDeElemento2.appendChild(div);
+
+                    button.addEventListener("click", async () => {
+                        try {
+                            button.disabled = true;
+                            const deletePersona = await fetch(`/prueba/personas/${persona.id}`, {
+                                method: "DELETE"
+                            });
+                            if (!deletePersona.ok) {
+                                return await errorHTTP(deletePersona);
+                            }
+                            const dataDelete = await deletePersona.json();
+
+                            document.getElementById("final2").textContent = `${dataDelete.mensaje}`;
+                            await cargarPersonas();
+                            console.log(persona.id);
+                        } catch (error) {
+                            console.log(error);
+                            document.getElementById("final2").textContent = "No se pudo conectar con el servidor";
+                        } finally {
+                            button.disabled = false;
+                        }
+
+                    }
+                    )
+                    let editando = false;
+                    const campo = document.createElement("input");
+                    const campo2 = document.createElement("input");
+                    campo.placeholder = "Nombre";
+                    campo2.placeholder = "Edad";
+
+                    campo.addEventListener("keydown", (evento) => {
+                        if (evento.key === "Enter") {
+                            evento.preventDefault();
+                            button2.click();
+                        }
+                        if (evento.key === "Escape") {
+                            evento.preventDefault();
+                            cargarPersonas();
+                            return;
+                        }
+                    });
+                    campo2.addEventListener("keydown", (evento) => {
+                        if (evento.key === "Enter") {
+                            evento.preventDefault();
+                            button2.click();
+                        }
+                        if (evento.key === "Escape") {
+                            evento.preventDefault();
+                            cargarPersonas();
+                            return;
+                        }
+                    });
+                    button2.addEventListener("click", async () => {
+                        try {
+                            button2.disabled = true;
+                            if (!editando) {
+
+
+                                campo.type = "text";
+                                campo.value = persona.nombre;
+                                nombre.replaceWith(campo
+                                )
+
+                                campo2.type = "number";
+                                campo2.value = persona.edad;
+                                edad.replaceWith(campo2
+                                )
+                                editando = true;
+                            } else {
+
+                                const datos = {
+                                    nombre: campo.value,
+                                    edad: campo2.valueAsNumber
+                                }
+
+                                const modPersona = await fetch(`/prueba/personas/${persona.id}`, {
+                                    method: "PATCH",
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    },
+                                    body: JSON.stringify(datos)
+                                });
+                                if (!modPersona.ok) {
+                                    return await errorHTTP(modPersona);
+                                }
+                                const datamsg = await modPersona.json();
+
+                                document.getElementById("final2").textContent = `${datamsg.mensaje}`;
+                                await cargarPersonas();
+                                console.log(campo.value);
+                                console.log(campo2.valueAsNumber);
+
+                            }
+
+
+
+                        } catch (error) {
+                            console.log(error);
+                            document.getElementById("final2").textContent = "No se pudo conectar con el servidor";
+
+                        } finally {
+                            button2.disabled = false;
+                        }
+                    })
+                });
+
+            }
+
+
+            async function cargarPersonas() {
+
+                try {
+                    const responsePersonas = await fetch("/prueba/personas");
+
+                    if (!responsePersonas.ok) {
+                        return await errorHTTP(responsePersonas);
+                    }
+                    const dataPersonas = await responsePersonas.json();
+
+                    mostrarPersonas(dataPersonas);
+                    personasActuales = dataPersonas.personas;
+                    actualizarVista();
+
+
+
+                } catch (error) {
+                    console.log(error);
+                    document.getElementById("final2").textContent = "No se pudo conectar con el servidor";
+                }
+            }
+
+            cargarPersonas();
+            formulario.addEventListener("submit", async (evento) => {
+                document.getElementById("final2").textContent = "";
+                try {
+
+                    const input = formulario.querySelector("input").value;//value siempre da string
+                    const inputs = formulario.querySelectorAll("input");
+                    evento.preventDefault();//evita que la pagina se recarge al enviar formulario 
+                    const datos = {};
+                    let valido = true;
+                    inputs.forEach((inputi, indice) => {
+                        //console.log(indice, inputi.value);
+
+                        const edadText = inputi.value;
+
+
+                        if (propiedades[indice] === "edad") {
+                            if (edadText.trim().length === 0) {
+
+                                valido = false;
+
+                            }
+                            else {
+                                datos[propiedades[indice]] = Number(inputi.value);
+                            }
+
+                        } else {
+                            if (edadText.trim() === "") {
+
+                                valido = false;
+                            }
+                            else {
+                                datos[propiedades[indice]] = inputi.value;
+                            }
+                        }
+                    })
+                    if (valido === false) {
+                        formulario.querySelector(".but").textContent = "error";
+                        return;
+                    }
+                    formulario.querySelector(".but").textContent = "enviar";
+
+                    inputs.forEach((inputi, indice) => {
+                        //console.log(indice, inputi.value);
+                        console.log(datos[propiedades[indice]]);
+
+                    })
+                    console.log(JSON.stringify(datos));
+
+                    const response3 = await fetch("/prueba", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"// le dice al servidor "Los datos que estoy enviando están en formato JSON."
+                        },
+                        body: JSON.stringify(datos)
+                    });
+                    if (!response3.ok) {
+                        return await errorHTTP(response3);
+                    }
+                    //  console.log(response3.ok);
+
+                    const data3 = await response3.json();
+                    console.log(data3.persona);
+
+                    // mensaje.textContent = data3.mensaje;
+                    document.getElementById("final2").textContent = `${data3.mensaje} Nombre: ${data3.persona.nombre}, Edad: ${data3.persona.edad}`;
+                    console.log(data3);
+
+
+                    await cargarPersonas();
+                    // console.log(dataPersonas.personas);
+                    const titulo = document.getElementById("Personasr");
+                    titulo.textContent = "Peronas Registradas";
+
+                } catch (error) {
+                    console.log(error);
+                    document.getElementById("final2").textContent = "No se pudo conectar con el servidor";
+                }
+
+            });
+
+
+        }
+
+
+
+
+        probarFetch();
+        //const elemento = document.getElementById("titulo")
+        // elemento.textContent = "poop"; utiliz dom cambia el html
+        // console.log(elemento.textContent);
+    </script>
+
+
+</body>
+
+</html>
