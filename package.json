@@ -117,5 +117,14 @@
     "wrappy": "^1.0.2",
     "xtend": "^4.0.2"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Daniolbap/library-.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/Daniolbap/library-/issues"
+  },
+  "homepage": "https://github.com/Daniolbap/library-#readme"
 }

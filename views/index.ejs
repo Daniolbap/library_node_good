@@ -25,8 +25,36 @@
 
             <button type="submit">Agregar libro</button>
 
+
         </form>
     </section>
+
+    <script>
+
+        const stopin = document.getElementById("add");
+        stopin.addEventListener("submit", (evento) => {
+
+          
+            console.log("Envío cancelado:", evento.defaultPrevented);
+            const datos = new FormData(stopin);
+
+            //console.log(datos.get("genre")); console.log(datos.get("title")); console.log(datos.get("author"));
+           let valido = true;
+            for (const [clave, valor] of datos.entries()) {
+                console.log(clave, valor);
+                 if (typeof valor !== "string" || valor.trim() == "") {
+                    valido = false; 
+                }
+            }
+            if(valido === true){
+                console.log("libro valido")
+            }else{
+                console.log("libro invalido")
+            }
+           
+        })
+
+    </script>
 
     <section class="search">
         <h2 id="buscar">Busca tu libro</h2>
