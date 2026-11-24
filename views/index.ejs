@@ -30,31 +30,64 @@
     </section>
 
     <script>
+        async function errorHTTP2(respuesta) {
+            const msg = await respuesta.json();
+            console.log(msg.error);
+            document.getElementById("statement").textContent = `El servidor respondió con un error:${msg.error}`;
+            return;
+        }
 
         const stopin = document.getElementById("add");
-        stopin.addEventListener("submit", (evento) => {
 
-          
-            console.log("Envío cancelado:", evento.defaultPrevented);
+        stopin.addEventListener("submit", async (event) => {
+            let libro = {};
+            event.preventDefault();
+            console.log("Envío cancelado:", event.defaultPrevented);
             const datos = new FormData(stopin);
 
             //console.log(datos.get("genre")); console.log(datos.get("title")); console.log(datos.get("author"));
-           let valido = true;
+            let valido = true;
             for (const [clave, valor] of datos.entries()) {
                 console.log(clave, valor);
-                 if (typeof valor !== "string" || valor.trim() == "") {
-                    valido = false; 
+                if (typeof valor !== "string" || valor.trim() == "") {
+                    valido = false;
+
                 }
+                libro[clave] = valor;
             }
-            if(valido === true){
+            console.log(libro);
+            if (valido === true) {
                 console.log("libro valido")
-            }else{
+            } else {
                 console.log("libro invalido")
             }
-           
+            try {
+                const add = await fetch("/add", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"// le dice al servidor "Los datos que estoy enviando están en formato JSON."
+                    },
+                    body: JSON.stringify(libro)
+                });
+                if (!add.ok) {
+                    return await errorHTTP2(add);
+                }
+                const addRe = await add.json();
+console.log()
+                  document.getElementById("statement").textContent = `${addRe.mensaje} : ${addRe.libro.title}`;
+
+
+            } catch (error) {
+                console.log(error);
+                document.getElementById("statement").textContent = "No se pudo conectar con el servidor";
+
+            }
+
         })
 
     </script>
+
+    <h2 id="statement"></h2>
 
     <section class="search">
         <h2 id="buscar">Busca tu libro</h2>
@@ -91,8 +124,10 @@
                     <button type="submit" class="but">Enviar</button>
                 </form>
             </section>
+            <section>
+                <h2 id="statement"></h2>
+            </section>
 
-            <h2 id="final2"></h2>
 
             <section class="inpur">
                 <h2 id="Personasr"></h2>

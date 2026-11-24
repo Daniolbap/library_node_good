@@ -8,24 +8,30 @@ router.post("/add", async (req, res) => {
   const libro = prepararLibro(req.body.title, req.body.author, req.body.genre);
 
   if (!comprobarLibroAutor(libro)) {
-    return res.send("debes llenar los campos");
+    return res.status(409
+    ).json({
+      error: "debes llenar los campos"
+    });
   }
 
   try {
-    await db.query(
-      "INSERT INTO books (title, author, genre) VALUES ($1, $2, $3)",
+    const result =  await db.query(
+      "INSERT INTO books (title, author, genre) VALUES ($1, $2, $3) RETURNING *",
       [libro.title, libro.author, libro.genre],
     );
-  } catch (error) {
-    if (error.code === "23505") {
-      return res.status(400).send("Ese libro ya existe");
-    }
 
-    console.error(error);
-    return res.status(500).send("Error del servidor");
+     return res.status(201).json({
+      mensaje: "libro agregado",
+      libro: result.rows[0],
+    });
+  } catch (error) {
+   console.error(error);
+    return res.status(500).json("Error del servidor");
+
+    
   }
 
-  res.redirect("/"); //Post/Redirect/Get (PRG).
+   //Post/Redirect/Get (PRG). res.redirect("/");
   //console.log(req.body);
 });
 
