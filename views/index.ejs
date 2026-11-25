@@ -34,7 +34,7 @@
             const msg = await respuesta.json();
             console.log(msg.error);
             document.getElementById("statement").textContent = `El servidor respondió con un error:${msg.error}`;
-            return;
+
         }
 
         const stopin = document.getElementById("add");
@@ -71,11 +71,12 @@
                 });
                 if (!add.ok) {
                     return await errorHTTP2(add);
+
                 }
                 const addRe = await add.json();
-console.log()
-                  document.getElementById("statement").textContent = `${addRe.mensaje} : ${addRe.libro.title}`;
 
+                document.getElementById("statement").textContent = `${addRe.mensaje} : ${addRe.libro.title}`;
+                await cargarLibros();
 
             } catch (error) {
                 console.log(error);
@@ -86,8 +87,9 @@ console.log()
         })
 
     </script>
-
-    <h2 id="statement"></h2>
+    <section>
+        <h2 id="statement"></h2>
+    </section>
 
     <section class="search">
         <h2 id="buscar">Busca tu libro</h2>
@@ -97,7 +99,7 @@ console.log()
         </form>
     </section>
 
-    <section class="delete">
+    <section class="delete" id="list-books">
         <% books.forEach (book=>{ %>
             <p> id:<%= book.id %>
                     <%= book.title %> - <%= book.author %> - <%= book.genre %>
@@ -117,6 +119,10 @@ console.log()
                 <% }); %>
             </section>
             <section>
+
+                <section id="list">
+
+                </section>
                 <h1>formulario x</h1>
                 <form id="formulario">
                     <input type="text" placeholder="Nombre">
@@ -124,8 +130,70 @@ console.log()
                     <button type="submit" class="but">Enviar</button>
                 </form>
             </section>
+
+            <script>
+                async function showLibros(dataLibros) {
+
+                    const agregarBooks = document.getElementById("list");
+                    agregarBooks.replaceChildren();
+                    dataLibros.forEach(book => {
+
+
+
+                        const div = document.createElement("div");
+                        div.classList.add("libros");
+                        const id = document.createElement("p");
+                        id.textContent = `id:${book.id}`;
+                        div.appendChild(id);
+                        const libro = document.createElement("p");
+                        libro.textContent = `Titulo:${book.title}`;
+                        div.appendChild(libro);
+                        const autor = document.createElement("p");
+                        autor.textContent = `Autor:${book.author}`;
+                        div.appendChild(autor);
+                        const genero = document.createElement("p");
+                        genero.textContent = `Genero:${book.genre}`;
+                        div.appendChild(genero);
+                        const button = document.createElement("button");
+                        button.textContent = 'Eliminar';
+                        button.type = "button";
+                        div.appendChild(button);
+                        const button2 = document.createElement("button");
+                        button2.textContent = 'Modificar';
+                        button2.type = "button";
+                        div.appendChild(button2);
+                        agregarBooks.appendChild(div);
+
+                    })
+                }
+
+
+                async function cargarLibros() {
+
+                    try {
+                        const responseLibros = await fetch("/prueba");
+
+                        if (!responseLibros.ok) {
+                            return await errorHTTP2(responseLibros);
+                        }
+                        const dataLibros = await responseLibros.json();
+
+                        showLibros(dataLibros);
+
+
+
+
+                    } catch (error) {
+                        console.log(error);
+                        document.getElementById("statement").textContent = "No se pudo conectar con el servidor";
+                    }
+                }
+
+                cargarLibros();
+
+            </script>
             <section>
-                <h2 id="statement"></h2>
+                <h2 id="final2"></h2>
             </section>
 
 
@@ -286,6 +354,7 @@ console.log()
             teclado.addEventListener("input", async (event) => {
                 actualizarVista();
             })
+
             function mostrarPersonas(dataPersonas) {
                 const agregarDeElemento2 = document.getElementById("lista-personas");
                 agregarDeElemento2.replaceChildren();

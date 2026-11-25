@@ -8,7 +8,7 @@ router.post("/add", async (req, res) => {
   const libro = prepararLibro(req.body.title, req.body.author, req.body.genre);
 
   if (!comprobarLibroAutor(libro)) {
-    return res.status(409
+    return res.status(400
     ).json({
       error: "debes llenar los campos"
     });
@@ -38,7 +38,7 @@ router.post("/add", async (req, res) => {
 router.post("/delete", async (req, res) => {
   const id = req.body.id;
   try {
-    const result = await db.query("DELETE FROM books WHERE id = $1", [id]);
+    const result = await db.query("DELETE FROM books WHERE id = $1 RETURNING *", [id]);
     console.log(result.rowCount);
     if (result.rowCount === 0) {
       return res.send("No existe el libro");
@@ -54,7 +54,7 @@ router.get("/edit", async (req, res) => {
   const id = req.query.id; //query porque estoy necesitando el dato de sql
 
   try {
-    const result = await db.query("SELECT * FROM books WHERE id = $1", [id]);
+    const result = await db.query("SELECT * FROM books WHERE id = $1 ", [id]);
     const book = result.rows[0];
     if (!book) {
       return res.send("no existe el libro ");
@@ -79,7 +79,7 @@ router.post("/edit", async (req, res) => {
 
   try {
     const result = await db.query(
-      "UPDATE books SET title = $1, author = $2, genre = $3 WHERE id = $4",
+      "UPDATE books SET title = $1, author = $2, genre = $3 WHERE id = $4 ",
       [libro.title, libro.author, libro.genre, id],
     );
     if (result.rowCount === 0) {

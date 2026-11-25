@@ -67,6 +67,25 @@ p{
 
 }
 
+#list{
+     display: grid ;
+     grid-template-columns: 1fr 1fr 1fr;
+     grid-template-rows: 1fr 1fr 1fr ;
+
+}
+.libros{
+  padding-top: 5px;
+     border: 2px solid #A020F0;
+}
+.libros > button{
+  border-radius: 40px;
+    padding-bottom: 10px;
+    margin-bottom: 5px;
+cursor: pointer;
+  transition: background-color 0.2s ease;
+   padding: 4px 8px;
+   font-size: 12px;     
+}
 .personas{
     padding-top: 5px;
      border: 2px solid #A020F0;
